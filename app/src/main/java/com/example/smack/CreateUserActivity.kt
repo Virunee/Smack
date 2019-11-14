@@ -41,6 +41,7 @@ class CreateUserActivity : AppCompatActivity() {
         var r = random.nextInt(255)
         var g = random.nextInt(255)
         var b = random.nextInt(255)
+        var string = "I added some changes to my project!"
 
         createAvatarImageView.setBackgroundColor((Color.rgb(r, g, b)))
 
