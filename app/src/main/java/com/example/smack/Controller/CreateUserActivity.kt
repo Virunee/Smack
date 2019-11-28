@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.example.smack.R
 import com.example.smack.Services.AuthService
+import com.example.smack.Services.UserDataService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -36,23 +37,27 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserBtnClicked(view: View) {
+
         val userName = createUsernameText.text.toString()
         val email = createEmailText.getText().toString()
         val password = createPasswordText.text.toString()
+
         AuthService.registerUser(this, email, password) { registerSuccess ->
             if (registerSuccess) {
                 Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+
                 AuthService.loginUser(this, email, password) {loginSuccess ->
                     if (loginSuccess) {
-                        println(AuthService.authToken)
-                        println(AuthService.userEmail)
-                        Toast.makeText(this, "Logged in", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Failed to log in", Toast.LENGTH_SHORT).show()
+                        AuthService.createUser(this, userName, email, userAvatar, avatarColour) { createUserSuccess ->
+                            if(createUserSuccess) {
+                                finish()
+                            } else {
+                                Toast.makeText(this, "Error: Account not created successfully", Toast.LENGTH_SHORT).show()
+                            }
+
+                        }
                     }
                 }
-            } else {
-                Toast.makeText(this, "Error: Account not created successfully", Toast.LENGTH_SHORT).show()
             }
         }
 
