@@ -17,10 +17,14 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.smack.R
 import com.example.smack.Services.AuthService
 import com.example.smack.Services.UserDataService
+import com.example.smack.Utilities.SOCKET_URL
+import io.socket.client.IO
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
 class MainActivity : AppCompatActivity() {
+
+    val socket = IO.socket(SOCKET_URL)
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
@@ -39,7 +43,23 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        socket.connect()
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter("BROADCAST_USER_DATA_CHANGE"))
+    }
+
+    override fun onPause() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
+        super.onPause()
+    }
+
+    override fun onDestroy() {
+        socket.disconnect()
+        super.onDestroy()
     }
 
     private val userDataChangeReceiver = object: BroadcastReceiver() {
@@ -93,13 +113,11 @@ class MainActivity : AppCompatActivity() {
                     val channelName = nameTextField.text.toString()
                     val channelDesc = descTextField.text.toString()
 
-                    hideKeyboard()
-
                     // Create channel with the channel name and description
+                    socket.emit("newChannel", channelName, channelDesc)
                 }
                 .setNegativeButton("Cancel") { dialogInterface, id ->
                     // cancel and close the dialog
-                    hideKeyboard()
                 }.show()
 
 
@@ -109,7 +127,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun sendMessageBtnClicked(view: View) {
-
+        hideKeyboard()
     }
 
     fun hideKeyboard() {
