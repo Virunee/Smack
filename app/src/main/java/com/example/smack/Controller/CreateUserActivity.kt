@@ -16,7 +16,7 @@ import java.util.*
 
 class CreateUserActivity : AppCompatActivity() {
 
-    var userAvatar = "profileDefault"
+    var userAvatar = "profiledefault"
     var avatarColour = "[0.5, 0.5, 0.5, 1]"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -47,31 +47,37 @@ class CreateUserActivity : AppCompatActivity() {
         val password = createPasswordText.text.toString()
 
         if(userName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-            AuthService.registerUser(this, email, password) { registerSuccess ->
-                if (registerSuccess) {
-                    AuthService.loginUser(this, email, password) {loginSuccess ->
-                        if (loginSuccess) {
-                            AuthService.createUser(this, userName, email, userAvatar, avatarColour) { createUserSuccess ->
-                                if(createUserSuccess) {
+            if(isEmailValid(email)) {
+                AuthService.registerUser(this, email, password) { registerSuccess ->
+                    if (registerSuccess) {
+                        AuthService.loginUser(this, email, password) {loginSuccess ->
+                            if (loginSuccess) {
+                                AuthService.createUser(this, email, userName, userAvatar, avatarColour) { createUserSuccess ->
+                                    if(createUserSuccess) {
 
-                                    val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
-                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
-                                    enableSpinner(false)
-                                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
-                                    finish()
-                                    
-                                } else {
-                                    errorToast()
+                                        val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                                        LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                        enableSpinner(false)
+                                        Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                                        finish()
+
+                                    } else {
+                                        errorToast()
+                                    }
                                 }
+                            } else {
+                                errorToast()
                             }
-                        } else {
-                            errorToast()
                         }
+                    } else {
+                        errorToast()
                     }
-                } else {
-                    errorToast()
                 }
+            } else {
+                Toast.makeText(this, "Please enter a valid email address", Toast.LENGTH_SHORT).show()
+                enableSpinner(false)
             }
+
         } else {
             Toast.makeText(this, "Make sure Username, Email and Password fields are filled out", Toast.LENGTH_SHORT).show()
             enableSpinner(false)
@@ -111,5 +117,9 @@ class CreateUserActivity : AppCompatActivity() {
     fun errorToast() {
         Toast.makeText(this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show()
         enableSpinner(false)
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }
