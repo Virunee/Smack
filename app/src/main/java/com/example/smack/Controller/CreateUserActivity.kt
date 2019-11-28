@@ -1,13 +1,16 @@
 package com.example.smack.Controller
 
+import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.example.smack.R
 import com.example.smack.Services.AuthService
 import com.example.smack.Services.UserDataService
+import com.example.smack.Utilities.BROADCAST_USER_DATA_CHANGE
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -19,6 +22,7 @@ class CreateUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
+        createSpinner.visibility = View.INVISIBLE
     }
 
     fun generateUserAvatar(view: View) {
@@ -37,29 +41,43 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserBtnClicked(view: View) {
-
+        enableSpinner(true)
         val userName = createUsernameText.text.toString()
         val email = createEmailText.getText().toString()
         val password = createPasswordText.text.toString()
 
-        AuthService.registerUser(this, email, password) { registerSuccess ->
-            if (registerSuccess) {
-                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+        if(userName.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
+            AuthService.registerUser(this, email, password) { registerSuccess ->
+                if (registerSuccess) {
+                    AuthService.loginUser(this, email, password) {loginSuccess ->
+                        if (loginSuccess) {
+                            AuthService.createUser(this, userName, email, userAvatar, avatarColour) { createUserSuccess ->
+                                if(createUserSuccess) {
 
-                AuthService.loginUser(this, email, password) {loginSuccess ->
-                    if (loginSuccess) {
-                        AuthService.createUser(this, userName, email, userAvatar, avatarColour) { createUserSuccess ->
-                            if(createUserSuccess) {
-                                finish()
-                            } else {
-                                Toast.makeText(this, "Error: Account not created successfully", Toast.LENGTH_SHORT).show()
+                                    val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
+                                    LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
+                                    enableSpinner(false)
+                                    Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                    
+                                } else {
+                                    errorToast()
+                                }
                             }
-
+                        } else {
+                            errorToast()
                         }
                     }
+                } else {
+                    errorToast()
                 }
             }
+        } else {
+            Toast.makeText(this, "Make sure Username, Email and Password fields are filled out", Toast.LENGTH_SHORT).show()
+            enableSpinner(false)
         }
+
+
 
     }
 
@@ -76,5 +94,22 @@ class CreateUserActivity : AppCompatActivity() {
         val savedB = b.toDouble() / 255
 
         avatarColour = "[$savedR, $savedG, $savedB, 1]"
+    }
+
+    fun enableSpinner(enable: Boolean) {
+        if(enable) {
+            createSpinner.visibility = View.VISIBLE
+        } else {
+            createSpinner.visibility = View.INVISIBLE
+
+        }
+        createUserBtn.isEnabled = !enable
+        createAvatarImageView.isEnabled = !enable
+        createChangeBackgroundColourBtn.isEnabled = !enable
+    }
+
+    fun errorToast() {
+        Toast.makeText(this, "Something went wrong, please try again", Toast.LENGTH_SHORT).show()
+        enableSpinner(false)
     }
 }
