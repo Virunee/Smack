@@ -14,11 +14,14 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.example.smack.Model.Channel
 import com.example.smack.R
 import com.example.smack.Services.AuthService
+import com.example.smack.Services.MessageService
 import com.example.smack.Services.UserDataService
 import com.example.smack.Utilities.SOCKET_URL
 import io.socket.client.IO
+import io.socket.emitter.Emitter
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.nav_header_main.*
 
@@ -43,21 +46,19 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
+        socket.connect()
+        socket.on("channelCreated", onNewChannel)
 
     }
 
     override fun onResume() {
-        super.onResume()
-        socket.connect()
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter("BROADCAST_USER_DATA_CHANGE"))
-    }
+        super.onResume()
 
-    override fun onPause() {
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
-        super.onPause()
     }
 
     override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(userDataChangeReceiver)
         socket.disconnect()
         super.onDestroy()
     }
@@ -135,6 +136,21 @@ class MainActivity : AppCompatActivity() {
 
         if(inputManager.isAcceptingText) {
             inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, 0)
+        }
+    }
+
+    private val onNewChannel = Emitter.Listener { args ->
+        runOnUiThread{
+            var channelName = args[0] as String
+            var channelDescription = args[1] as String
+            var channelId = args[2] as String
+
+            val newChannel = Channel(channelName, channelDescription, channelId)
+
+            MessageService.channels.add(newChannel)
+            println(newChannel.name)
+            println(newChannel.description)
+            println(newChannel.id)
         }
     }
 }

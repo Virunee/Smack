@@ -24,7 +24,6 @@
         android:ems="10"
         android:hint="channel name"
         android:inputType="textPersonName"
-        android:text="channel name"
         android:textColor="@android:color/darker_gray" />
 
     <EditText
