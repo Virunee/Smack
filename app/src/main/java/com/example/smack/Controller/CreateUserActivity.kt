@@ -4,7 +4,9 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.example.smack.R
+import com.example.smack.Services.AuthService
 import kotlinx.android.synthetic.main.activity_create_user.*
 import java.util.*
 
@@ -34,6 +36,13 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserBtnClicked(view: View) {
+        AuthService.registerUser(this, createEmailText.getText().toString(), createPasswordText.getText().toString()) { complete ->
+            if (complete) {
+                Toast.makeText(this, "Account created successfully!", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "Error: Account not created successfully", Toast.LENGTH_SHORT).show()
+            }
+        }
 
     }
 
