@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GravityCompat
@@ -58,11 +59,7 @@ class MainActivity : AppCompatActivity() {
 
         setupAdapters()
 
-    }
-
-    override fun onResume() {
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter("BROADCAST_USER_DATA_CHANGE"))
-        super.onResume()
 
     }
 
@@ -105,15 +102,16 @@ class MainActivity : AppCompatActivity() {
 
     fun loginBtnNavClicked(view: View) {
         if(AuthService.isLoggedIn) {
+            //logging out
             UserDataService.logout()
             userNameNavHeader.text = ""
             userEmailNavHeader.text = ""
             userImageNavHeader.setImageResource(R.drawable.profiledefault)
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginButtonNavHeader.text = "Login"
-            MessageService.channels.clear()
-            channelAdapter.notifyDataSetChanged()
+            Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
         } else {
+            //logging in
             startActivity(Intent(this, LoginActivity::class.java))
         }
 

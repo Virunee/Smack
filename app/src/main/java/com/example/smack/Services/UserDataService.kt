@@ -40,6 +40,7 @@ object UserDataService {
         AuthService.authToken = ""
         AuthService.userEmail = ""
         AuthService.isLoggedIn = false
+        MessageService.channels.clear()
     }
 
 }
