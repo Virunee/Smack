@@ -61,6 +61,9 @@ class MainActivity : AppCompatActivity() {
 
         LocalBroadcastManager.getInstance(this).registerReceiver(userDataChangeReceiver, IntentFilter("BROADCAST_USER_DATA_CHANGE"))
 
+        if (App.sharedPreferences.isLoggedIn) {
+            AuthService.finderUserByEmail(this){}
+        }
     }
 
     override fun onDestroy() {
@@ -73,7 +76,7 @@ class MainActivity : AppCompatActivity() {
         override fun onReceive(context: Context, intent: Intent?) {
             // This is what we want to happen when we receive that broadcast.
             // In this case - update the UI
-            if(AuthService.isLoggedIn) {
+            if(App.sharedPreferences.isLoggedIn) {
                 userNameNavHeader.text = UserDataService.name
                 userEmailNavHeader.text = UserDataService.email
                 val resourceId = resources.getIdentifier(UserDataService.avatarName, "drawable", packageName)
@@ -101,7 +104,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun loginBtnNavClicked(view: View) {
-        if(AuthService.isLoggedIn) {
+        if(App.sharedPreferences.isLoggedIn) {
             //logging out
             UserDataService.logout()
             userNameNavHeader.text = ""
@@ -118,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun addChannelClicked(view: View) {
-        if(AuthService.isLoggedIn) {
+        if(App.sharedPreferences.isLoggedIn) {
             val builder = AlertDialog.Builder(this)
             val dialogView = layoutInflater.inflate(R.layout.add_channel_dialog, null)
 
