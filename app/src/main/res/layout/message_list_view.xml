@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/messageUserImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/dark17" />
+
+    <TextView
+        android:id="@+id/messageUserNameLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/messageUserImage"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Virunee" />
+
+    <TextView
+        android:id="@+id/timeStampLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toEndOf="@+id/messageUserNameLabel"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="January 1, 10:30pm" />
+
+    <TextView
+        android:id="@+id/messageBodyLabel"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/messageUserImage"
+        app:layout_constraintTop_toBottomOf="@+id/timeStampLabel"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Viverra accumsan in nisl nisi scelerisque eu ultrices. Tincidunt id aliquet risus feugiat. Aenean vel elit scelerisque mauris pellentesque pulvinar. Aliquam eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis. Erat imperdiet sed euismod nisi. Eu lobortis elementum nibh tellus molestie nunc non blandit. Porttitor rhoncus dolor purus non. Sollicitudin ac orci phasellus egestas tellus rutrum tellus. Consectetur a erat nam at. Proin sagittis nisl rhoncus mattis rhoncus urna. Fermentum odio eu feugiat pretium nibh ipsum consequat nisl. Mauris cursus mattis molestie a iaculis at erat pellentesque. Nulla porttitor massa id neque aliquam vestibulum morbi. Turpis egestas maecenas pharetra convallis posuere morbi leo. Mattis enim ut tellus elementum sagittis vitae et leo duis. Adipiscing bibendum est ultricies integer. Turpis egestas integer eget aliquet nibh praesent tristique magna sit." />
+</androidx.constraintlayout.widget.ConstraintLayout>

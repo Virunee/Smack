@@ -41,7 +41,8 @@ object UserDataService {
         App.sharedPreferences.authToken = ""
         App.sharedPreferences.userEmail = ""
         App.sharedPreferences.isLoggedIn = false
-        MessageService.channels.clear()
+        MessageService.clearMessages()
+        MessageService.clearChannels()
     }
 
 }
