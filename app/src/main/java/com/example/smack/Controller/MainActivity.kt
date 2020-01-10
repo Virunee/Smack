@@ -185,7 +185,7 @@ class MainActivity : AppCompatActivity() {
 
 
         } else {
-            //TOAST
+            Toast.makeText(this, "Please log in to add a new channel", Toast.LENGTH_SHORT).show()
         }
     }
 
