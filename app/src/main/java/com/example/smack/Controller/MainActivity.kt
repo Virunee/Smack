@@ -156,6 +156,7 @@ class MainActivity : AppCompatActivity() {
             userImageNavHeader.setBackgroundColor(Color.TRANSPARENT)
             loginButtonNavHeader.text = "Login"
             Toast.makeText(this, "Logged out", Toast.LENGTH_SHORT).show()
+            mainChannelName.text = "Please log in"
         } else {
             //logging in
             startActivity(Intent(this, LoginActivity::class.java))
